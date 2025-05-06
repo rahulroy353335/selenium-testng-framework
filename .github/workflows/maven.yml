@@ -1,17 +1,51 @@
-name: Java CI with Maven
+name: Firefox Test Execution
 
 on: [push, pull_request]
 
 jobs:
-  build:
+  firefox-test:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
+    
     steps:
     - uses: actions/checkout@v4
+    
     - name: Set up JDK 22
       uses: actions/setup-java@v4
       with:
         java-version: '22'
-        distribution: 'temurin'  # Eclipse Temurin is recommended
+        distribution: 'temurin'
         cache: 'maven'
-    - name: Build with Maven
-      run: mvn -B clean verify --file pom.xml
+    
+    - name: Cache Maven dependencies
+      uses: actions/cache@v3
+      with:
+        path: ~/.m2/repository
+        key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+        restore-keys: ${{ runner.os }}-m2-
+    
+    - name: Install Firefox
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y firefox
+        
+    - name: Download GeckoDriver
+      run: |
+        wget https://github.com/mozilla/geckodriver/releases/download/v0.34.0/geckodriver-v0.34.0-linux64.tar.gz
+        tar -xvzf geckodriver*
+        chmod +x geckodriver
+        sudo mv geckodriver /usr/local/bin/
+    
+    - name: Run FirefoxTest
+      run: |
+        mvn -B test -Dtest=FirefoxTest
+        ls -la test-output/
+    
+    - name: Upload Test Report
+      uses: actions/upload-artifact@v3
+      if: always()
+      with:
+        name: test-reports
+        path: |
+          test-output/
+          target/surefire-reports/
