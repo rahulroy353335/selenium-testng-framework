@@ -29,12 +29,13 @@ jobs:
         sudo apt-get update
         sudo apt-get install -y firefox
         
-    - name: Download GeckoDriver
+    - name: Download GeckoDriver (Linux)
       run: |
         wget https://github.com/mozilla/geckodriver/releases/download/v0.34.0/geckodriver-v0.34.0-linux64.tar.gz
-        tar -xvzf geckodriver*
+        tar -xvzf geckodriver-v0.34.0-linux64.tar.gz
         chmod +x geckodriver
         sudo mv geckodriver /usr/local/bin/
+        geckodriver --version
     
     - name: Run FirefoxTest
       run: |
