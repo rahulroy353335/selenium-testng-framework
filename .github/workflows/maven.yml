@@ -39,6 +39,7 @@ jobs:
     
     - name: Run FirefoxTest
       run: |
+        mkdir -p test-output  # Ensure directory exists
         mvn -B test -Dtest=FirefoxTest
         ls -la test-output/
     
