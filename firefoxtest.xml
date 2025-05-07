@@ -3,7 +3,7 @@
  <listeners>
         <listener class-name="com.aventstack.extentreports.testng.listener.ExtentITestListenerClassAdapter"/>
     </listeners>
-    <test name="Firefox Tests">
+    <test name="FirefoxTest">
         <classes>
             <class name="com.example.FirefoxTest"/>
         </classes>
