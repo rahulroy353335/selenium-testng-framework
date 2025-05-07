@@ -8,27 +8,41 @@ import java.io.File;
 
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
+import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 public class FirefoxTest extends BaseTest {
+
+    @BeforeMethod
+    public void setup() {
+        // Use system-installed GeckoDriver in CI, local path in development
+        String driverPath = System.getenv("CI") != null
+                ? "/usr/local/bin/geckodriver" // GitHub Actions path
+                : System.getProperty("user.dir") + File.separator + "geckodriver.exe"; // Local path
+
+        System.setProperty("webdriver.gecko.driver", driverPath);
+        FirefoxOptions options = new FirefoxOptions();
+        driver = new FirefoxDriver(options);
+
+    }
 
     @Test
     public void testGoogle() {
         // Set path to GeckoDriver
         // System.setProperty("webdriver.gecko.driver", System.getProperty("user.dir") +
         // "/geckodriver.exe");
-        String os = System.getProperty("os.name").toLowerCase();
-        String driverPath;
-        if (os.contains("win")) {
-            driverPath = "geckodriver.exe";
-        } else {
-            driverPath = "geckodriver";
-        }
+        // String os = System.getProperty("os.name").toLowerCase();
+        // String driverPath;
+        // if (os.contains("win")) {
+        // driverPath = "geckodriver.exe";
+        // } else {
+        // driverPath = "geckodriver";
+        // }
 
-        System.setProperty("webdriver.gecko.driver",
-                System.getProperty("user.dir") + File.separator + driverPath);
-        FirefoxOptions options = new FirefoxOptions();
-        driver = new FirefoxDriver(options);
+        // System.setProperty("webdriver.gecko.driver",
+        // System.getProperty("user.dir") + File.separator + driverPath);
+        // FirefoxOptions options = new FirefoxOptions();
+        // driver = new FirefoxDriver(options);
 
         test.log(Status.INFO, "Launching Firefox browser");
         driver.get("https://www.google.com");

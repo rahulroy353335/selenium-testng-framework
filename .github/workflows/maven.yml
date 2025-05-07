@@ -35,6 +35,11 @@ jobs:
         tar -xvzf geckodriver-v0.34.0-linux64.tar.gz
         chmod +x geckodriver
         sudo mv geckodriver /usr/local/bin/
+        # Verify installation
+        which geckodriver
+        geckodriver --version
+    
+
         
     
     - name: Run FirefoxTest
