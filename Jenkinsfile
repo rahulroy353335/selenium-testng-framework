@@ -22,17 +22,18 @@ pipeline {
             }
             post {
                 always {
-                    // Publish HTML reports (if configured)
-                    publishHTML target: [
-                        allowMissing: false,
-                        alwaysLinkToLastBuild: false,
-                        keepAll: true,
-                        reportDir: 'target/surefire-reports',
-                        reportFiles: 'emailable-report.html',
-                        reportName: 'Test Results'
-                    ]
-                }
-            }
+                    publishHTML(
+                        target: [
+                            allowMissing: false,
+                            alwaysLinkToLastBuild: false,
+                            keepAll: true,
+                            reportDir: 'target/surefire-reports', // Path to your HTML reports
+                            reportFiles: 'index.html',            // Main report file (e.g., TestNG, JUnit)
+                            reportName: 'Test Results'
+                                ]
+                                )
+                        }
+                    }
         }
     }
     post {
