@@ -30,10 +30,10 @@ pipeline {
             mail to: 'rajaroy353335@gmail.com',
              subject: "FAILED: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
                  body: """
-                 Build failed. Check details at: ${env.BUILD_URL}
+                Build failed. Check details at: ${env.BUILD_URL}
                  
                  Last 50 lines of logs:
-                 ${bat(script: 'type target\\surefire-reports\\*.txt 2>nul | tail -50 || echo No logs found', returnStdout: true)}
+                  ${bat(script: 'powershell -command "Get-Content target\\surefire-reports\\*.txt -Tail 50 2>$null || echo \'No logs found\'"', returnStdout: true)}
                  """
         }
         success {
