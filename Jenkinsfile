@@ -14,12 +14,8 @@ pipeline {
         stage('Build & Test') {
             steps {
                 // Run tests in headless mode (Linux example)
-                sh '''
-                  export DISPLAY=:99
-                  Xvfb :99 -screen 0 1024x768x24 &
-                  mvn clean test -Dtest=FirefoxTest
-                '''
-                sh 'ls -la target/'
+                bat 'mvn clean test -Dtest=FirefoxTest'  // Use 'bat' instead of 'sh'
+                bat 'dir /s target\\'  // Windows directory listing
             }
             
         }
@@ -28,7 +24,7 @@ pipeline {
 
         always {
             // Archive test logs (optional)
-            archiveArtifacts artifacts: 'target/surefire-reports/*.xml, target/*.jar', allowEmptyArchive: true
+            archiveArtifacts artifacts: 'target\\surefire-reports\\*.xml, target\\*.jar', allowEmptyArchive: true
         }
         failure {
             mail to: 'rajaroy353335@gmail.com',
@@ -37,7 +33,7 @@ pipeline {
                  Build failed. Check details at: ${env.BUILD_URL}
                  
                  Last 50 lines of logs:
-                 ${sh(script: 'tail -50 target/surefire-reports/*.txt || echo "No logs found"', returnStdout: true)}
+                 ${bat(script: 'type target\\surefire-reports\\*.txt 2>nul | tail -50 || echo No logs found', returnStdout: true)}
                  """
         }
         success {
