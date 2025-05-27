@@ -19,6 +19,7 @@ pipeline {
                   Xvfb :99 -screen 0 1024x768x24 &
                   mvn clean test -Dtest=FirefoxTest
                 '''
+                sh 'ls -la target/'
             }
             
         }
@@ -27,7 +28,7 @@ pipeline {
 
         always {
             // Archive test logs (optional)
-            archiveArtifacts artifacts: 'target/**/*.log, target/**/*.txt', allowEmptyArchive: true
+            archiveArtifacts artifacts: 'target/surefire-reports/*.xml, target/*.jar', allowEmptyArchive: true
         }
         failure {
             mail to: 'rajaroy353335@gmail.com',
