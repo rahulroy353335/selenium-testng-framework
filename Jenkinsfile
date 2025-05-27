@@ -20,28 +20,29 @@ pipeline {
                   mvn clean test -Dtest=FirefoxTest
                 '''
             }
-            post {
-                always {
-                    publishHTML(
-                        target: [
-                            allowMissing: false,
-                            alwaysLinkToLastBuild: false,
-                            keepAll: true,
-                            reportDir: 'target/surefire-reports', // Path to your HTML reports
-                            reportFiles: 'index.html',            // Main report file (e.g., TestNG, JUnit)
-                            reportName: 'Test Results'
-                                ]
-                                )
-                        }
-                    }
+            
         }
     }
     post {
+
+        always {
+            // Archive test logs (optional)
+            archiveArtifacts artifacts: 'target/**/*.log, target/**/*.txt', allowEmptyArchive: true
+        }
         failure {
-            slackSend channel: '#alerts', message: "❌ Build Failed: ${env.JOB_NAME} ${env.BUILD_NUMBER}"
+            mail to: 'rajaroy353335@gmail.com',
+             subject: "FAILED: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
+                 body: """
+                 Build failed. Check details at: ${env.BUILD_URL}
+                 
+                 Last 50 lines of logs:
+                 ${sh(script: 'tail -50 target/surefire-reports/*.txt || echo "No logs found"', returnStdout: true)}
+                 """
         }
         success {
-            slackSend channel: '#alerts', message: "✅ Build Succeeded: ${env.JOB_NAME} ${env.BUILD_NUMBER}"
+            mail to: 'rajaroy353335@gmail.com',
+             subject: "SUCCESS: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
+             body: "See build: ${env.BUILD_URL}"
         }
     }
 }
