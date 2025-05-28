@@ -25,6 +25,8 @@ pipeline {
         archiveArtifacts artifacts: 'target\\surefire-reports\\*.xml', allowEmptyArchive: true
     }
     failure {
+        withCredentials([string(credentialsId: 'gmail-smtp-password', variable: 'SMTP_SECRET')]) {
+                env.MAIL_SMTP_PASSWORD = "${SMTP_SECRET}"
         emailext (
             subject: "FAILED: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
             body: """
@@ -35,13 +37,17 @@ pipeline {
             to: 'rajaroy353335@gmail.com',
             attachLog: true
         )
+            }
     }
     success {
+        withCredentials([string(credentialsId: 'gmail-smtp-password', variable: 'SMTP_SECRET')]) {
+                env.MAIL_SMTP_PASSWORD = "${SMTP_SECRET}"
         emailext (
             subject: "SUCCESS: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
             body: "Build succeeded: ${env.BUILD_URL}",
             to: 'rajaroy353335@gmail.com'
         )
+        }
     }
 }
 }
