@@ -1,5 +1,10 @@
 pipeline {
-    agent any
+    agent {
+        docker {
+            image 'maven:3.8.8-eclipse-temurin-21'
+            args '-v /tmp/.X11-unix:/tmp/.X11-unix -e DISPLAY=:99'
+        }
+    }
     tools {
         maven 'Maven 3.8.8' // Match your Jenkins Maven setup
         jdk 'jdk21' // Match your Jenkins JDK setup

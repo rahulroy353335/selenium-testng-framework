@@ -4,46 +4,9 @@ import com.aventstack.extentreports.MediaEntityBuilder;
 import com.aventstack.extentreports.Status;
 import com.example.base.BaseTest;
 
-import io.github.bonigarcia.wdm.WebDriverManager;
-
-import org.openqa.selenium.firefox.FirefoxDriver;
-import org.openqa.selenium.firefox.FirefoxOptions;
-import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 public class FirefoxTest extends BaseTest {
-
-    @BeforeMethod
-    public void setup() {
-        // Use system-installed GeckoDriver in CI, local path in development
-        // String driverPath = System.getenv("CI") != null
-        // ? "/usr/local/bin/geckodriver" // GitHub Actions path
-        // : System.getProperty("user.dir") + File.separator + "geckodriver.exe"; //
-        // Local path
-
-        // System.setProperty("webdriver.gecko.driver", driverPath);
-        // FirefoxOptions options = new FirefoxOptions();
-        // driver = new FirefoxDriver(options);
-
-        // Auto-download and configure the correct GeckoDriver version
-        WebDriverManager.firefoxdriver().setup();
-
-        FirefoxOptions options = new FirefoxOptions();
-
-        // For CI environments (Jenkins/GitHub Actions)
-        if (System.getenv("CI") != null) {
-            options.addArguments("--headless=new");
-        }
-
-        // For Windows local development
-        if (System.getProperty("os.name").toLowerCase().contains("win")) {
-            options.setBinary("C:\\Program Files\\Mozilla Firefox\\firefox.exe");
-        }
-
-        driver = new FirefoxDriver(options);
-
-    }
-
     @Test
     public void testGoogle() {
         // Set path to GeckoDriver

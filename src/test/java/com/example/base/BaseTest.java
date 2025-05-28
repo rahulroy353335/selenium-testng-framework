@@ -7,12 +7,16 @@ import com.aventstack.extentreports.MediaEntityBuilder;
 //import com.aventstack.extentreports.reporter.ExtentSparkReporter;
 import com.example.utils.ExtentManager;
 
+import io.github.bonigarcia.wdm.WebDriverManager;
+
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.firefox.FirefoxOptions;
 import org.testng.ITestResult;
 import org.testng.annotations.*;
-
+import org.testng.annotations.BeforeMethod;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -34,8 +38,27 @@ public class BaseTest {
     }
 
     @BeforeMethod
-    public void setUp(ITestResult result) {
+    public void setup(ITestResult result) {
+
         test = extent.createTest(result.getMethod().getMethodName());
+        // Auto-configure GeckoDriver (works in Docker/Linux/Windows)
+        WebDriverManager.firefoxdriver().setup();
+
+        FirefoxOptions options = new FirefoxOptions();
+
+        // Universal headless mode for CI/Docker
+        if (isRunningInCI() || isRunningInDocker()) {
+            options.addArguments("--headless=new");
+            options.addArguments("--disable-gpu");
+            options.addArguments("--window-size=1920,1080");
+        }
+
+        // Windows-specific config (local development only)
+        if (isRunningOnWindows() && !isRunningInDocker()) {
+            options.setBinary("C:\\Program Files\\Mozilla Firefox\\firefox.exe");
+        }
+
+        driver = new FirefoxDriver(options);
     }
 
     @AfterMethod
@@ -59,6 +82,19 @@ public class BaseTest {
         if (driver != null) {
             driver.quit();
         }
+    }
+
+    private boolean isRunningInCI() {
+        return System.getenv("CI") != null;
+    }
+
+    private boolean isRunningInDocker() {
+        return System.getenv("DOCKER") != null ||
+                new File("/.dockerenv").exists();
+    }
+
+    private boolean isRunningOnWindows() {
+        return System.getProperty("os.name").toLowerCase().contains("win");
     }
 
     @AfterSuite
