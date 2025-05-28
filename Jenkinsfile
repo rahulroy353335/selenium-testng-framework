@@ -21,25 +21,27 @@ pipeline {
         }
     }
     post {
-
-        always {
-            // Archive test logs (optional)
-            archiveArtifacts artifacts: 'target\\surefire-reports\\*.xml, target\\*.jar', allowEmptyArchive: true
-        }
-        failure {
-            mail to: 'rajaroy353335@gmail.com',
-             subject: "FAILED: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
-                 body: """
-                Build failed. Check details at: ${env.BUILD_URL}
-                 
-                 Last 50 lines of logs:
-                  ${bat(script: 'powershell -command "Get-Content target\\surefire-reports\\*.txt -Tail 50 2>$null || echo \'No logs found\'"', returnStdout: true)}
-                 """
-        }
-        success {
-            mail to: 'rajaroy353335@gmail.com',
-             subject: "SUCCESS: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
-             body: "See build: ${env.BUILD_URL}"
-        }
+    always {
+        archiveArtifacts artifacts: 'target\\surefire-reports\\*.xml', allowEmptyArchive: true
     }
+    failure {
+        emailext (
+            subject: "FAILED: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
+            body: """
+            Check build: ${env.BUILD_URL}
+            Last 50 lines of logs:
+            ${bat(script: 'powershell -command "Get-Content target\\surefire-reports\\*.txt -Tail 50 2>$null || echo \'No logs found\'"', returnStdout: true)}
+            """,
+            to: 'rajaroy353335@gmail.com',
+            attachLog: true
+        )
+    }
+    success {
+        emailext (
+            subject: "SUCCESS: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
+            body: "Build succeeded: ${env.BUILD_URL}",
+            to: 'rajaroy353335@gmail.com'
+        )
+    }
+}
 }

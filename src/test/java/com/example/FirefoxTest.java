@@ -6,8 +6,6 @@ import com.example.base.BaseTest;
 
 import io.github.bonigarcia.wdm.WebDriverManager;
 
-import java.io.File;
-
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
 import org.testng.annotations.BeforeMethod;
