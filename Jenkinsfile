@@ -4,6 +4,14 @@ pipeline {
         maven 'Maven 3.8.8' // Match your Jenkins Maven setup
         jdk 'jdk21' // Match your Jenkins JDK setup
     }
+    environment {
+        // SMTP Configuration (Gmail)
+        MAIL_SMTP_HOST = 'smtp.gmail.com'
+        MAIL_SMTP_PORT = '587'
+        MAIL_SMTP_USER = 'rahulroy531990@gmail.com'
+        MAIL_SMTP_AUTH = 'true'
+        MAIL_SMTP_STARTTLS_ENABLE = 'true'
+    }
     stages {
         stage('Checkout') {
             steps {
@@ -21,12 +29,13 @@ pipeline {
         }
     }
     post {
-    always {
+      always {
         archiveArtifacts artifacts: 'target\\surefire-reports\\*.xml', allowEmptyArchive: true
     }
     failure {
+      script {   
         withCredentials([string(credentialsId: 'gmail-smtp-password', variable: 'SMTP_SECRET')]) {
-                env.MAIL_SMTP_PASSWORD = "${SMTP_SECRET}"
+                env.MAIL_SMTP_PASSWORD = SMTP_SECRET
         emailext (
             subject: "FAILED: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
             body: """
@@ -38,10 +47,12 @@ pipeline {
             attachLog: true
         )
             }
+      }
     }
     success {
+      script {  
         withCredentials([string(credentialsId: 'gmail-smtp-password', variable: 'SMTP_SECRET')]) {
-                env.MAIL_SMTP_PASSWORD = "${SMTP_SECRET}"
+                env.MAIL_SMTP_PASSWORD = SMTP_SECRET
         emailext (
             subject: "SUCCESS: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
             body: "Build succeeded: ${env.BUILD_URL}",
@@ -49,5 +60,6 @@ pipeline {
         )
         }
     }
+     }
 }
 }
