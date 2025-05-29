@@ -123,7 +123,7 @@
     			</dependencies>
                 <configuration>
                     <suiteXmlFiles>
-                    	<suiteXmlFile>firefoxtest.xml</suiteXmlFile>
+                    	<suiteXmlFile>${project.basedir}/firefoxtest.xml</suiteXmlFile>
                 	</suiteXmlFiles>
                 </configuration>
             </plugin>

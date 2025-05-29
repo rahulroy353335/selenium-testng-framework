@@ -16,7 +16,7 @@ import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
 import org.testng.ITestResult;
 import org.testng.annotations.*;
-import org.testng.annotations.BeforeMethod;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -48,13 +48,14 @@ public class BaseTest {
 
         // Universal headless mode for CI/Docker
         if (isRunningInCI() || isRunningInDocker()) {
+            options.setBinary("/usr/bin/firefox");
             options.addArguments("--headless=new");
             options.addArguments("--disable-gpu");
             options.addArguments("--window-size=1920,1080");
         }
 
         // Windows-specific config (local development only)
-        if (isRunningOnWindows() && !isRunningInDocker()) {
+        else if (isRunningOnWindows()) {
             options.setBinary("C:\\Program Files\\Mozilla Firefox\\firefox.exe");
         }
 
