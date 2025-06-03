@@ -1,8 +1,8 @@
-package com.example;
+package com.saucedemo;
 
 import com.aventstack.extentreports.MediaEntityBuilder;
 import com.aventstack.extentreports.Status;
-import com.example.base.BaseTest;
+import com.saucedemo.base.BaseTest;
 
 import org.testng.annotations.Test;
 
@@ -26,7 +26,7 @@ public class FirefoxTest extends BaseTest {
         // driver = new FirefoxDriver(options);
 
         test.log(Status.INFO, "Launching Firefox browser");
-        driver.get("https://www.google.com");
+        // driver.get("https://www.google.com");
 
         test.log(Status.INFO, "Verifying page title");
         String title = driver.getTitle();

@@ -1,11 +1,10 @@
-package com.example.base;
+package com.saucedemo.base;
 
 import com.aventstack.extentreports.ExtentReports;
 import com.aventstack.extentreports.ExtentTest;
 import com.aventstack.extentreports.MediaEntityBuilder;
-//import com.aventstack.extentreports.Status;
-//import com.aventstack.extentreports.reporter.ExtentSparkReporter;
-import com.example.utils.ExtentManager;
+import com.saucedemo.utils.ConfigReader;
+import com.saucedemo.utils.ExtentManager;
 
 import io.github.bonigarcia.wdm.WebDriverManager;
 
@@ -60,6 +59,7 @@ public class BaseTest {
         }
 
         driver = new FirefoxDriver(options);
+        driver.get(ConfigReader.get("baseUrl"));
     }
 
     @AfterMethod
