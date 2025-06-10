@@ -1,7 +1,7 @@
 # Build stage
 FROM maven:3.8.8-eclipse-temurin-21 AS builder
 WORKDIR /app
-COPY pom.xml firefoxtest.xml ./
+COPY pom.xml testng.xml ./
 RUN mvn dependency:go-offline
 COPY src ./src
 RUN mvn clean package
